@@ -80,11 +80,10 @@ class Library:
         
     def write_member_list(self, file):
         for member in self.member_list:
-            input_data = str(member.member_id) + " " + str(member.member_name)
+            input_data = str(member.member_id) + " " + str(member.member_name) + "\n"
             file.write(input_data)
         
     def read_member_list(self, file):
-        
         lines = file.readlines()
         
         for line in lines:
@@ -133,11 +132,10 @@ class Library:
         
     def write_book_list(self, file):
         for book in self.book_list:
-            input_data = str(book.book_id) + " " + str(book.book_name) + " " + str(book.book_author)
+            input_data = str(book.book_id) + " " + str(book.book_name) + " " + str(book.book_author) + "\n"
             file.write(input_data)
         
     def read_book_list(self, file):
-        
         lines = file.readlines()
         
         for line in lines:
@@ -154,12 +152,14 @@ if __name__ == "__main__":
     try:
         book_file = open(book_path, "r", encoding="utf-8")
         library.read_book_list(book_file)
+        book_file.close()
     except FileNotFoundError as e:
         print(e)
     
     try:
         member_file = open(member_path, "r", encoding="utf-8")
         library.read_member_list(member_file)
+        member_file.close()
     except FileNotFoundError as e:
         print(e)
     
