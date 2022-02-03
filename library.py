@@ -16,12 +16,8 @@ class Member:
         
         self.member_id = string_key
         
-        #print("member regist :", self.member_id, self.member_name)
-        
     def update_member_data(self, name):
         self.member_name = name
-        
-        #print("member data update :", self.member_id, self.member_name)
         
 class Book:
     book_id = ""
@@ -39,18 +35,12 @@ class Book:
         
         self.book_id = string_key
         
-        #print("book regist :", self.book_id, self.book_name, self.book_author)
-        
     def update_member_id(self, member_id):
         self.book_member_id = member_id
-        
-        #print("book borrow update :", self.book_id, self.book_name, self.book_author, self.book_member_id)
         
     def update_book_data(self, name, author):
         self.book_name = name
         self.book_author = author
-        
-        #print("book data update :", self.book_id, self.book_name, self.book_author)
         
 class Library:
     member_list = []
@@ -63,7 +53,7 @@ class Library:
         
     def remove_member(self, id):
         for member in self.member_list:
-            if member.id == id:
+            if member.member_id == id:
                 self.member_list.remove(member)
                 print("--회원 제거가 성공하였습니다.--")
                 return
@@ -72,7 +62,7 @@ class Library:
         
     def update_member(self, id, name):
         for member in self.member_list:
-            if member.id == id:
+            if member.member_id == id:
                 member.member_name = name
                 print("--회원 정보 변경이 성공하였습니다.--")
                 print(member.member_id, member.member_name)
@@ -85,6 +75,8 @@ class Library:
         
         for member in self.member_list:
             print(member.member_id, member.member_name)
+            
+        print("\n")
             
     def regist_book(self, name, author):
         new_book = Book(name, author)
@@ -101,7 +93,7 @@ class Library:
         
     def update_book(self, id, name, author):
         for book in self.book_list:
-            if book.id == id:
+            if book.book_id == id:
                 book.book_name = name
                 book.book_author = author
                 print("--도서 정보 변경이 성공하였습니다.--")
@@ -115,6 +107,8 @@ class Library:
         
         for book in self.book_list:
             print(book.book_id, book.book_name, book.book_author)
+            
+        print("\n")
         
 if __name__ == "__main__":
     
@@ -145,11 +139,18 @@ if __name__ == "__main__":
             library.update_member(input_id, input_name) 
         elif input_value == '4':
             library.show_memberlist()
+        elif input_value == '5':
+            input_name = input("신규 도서의 이름을 입력해주세요. \n >>>")
+            library.regist_book(input_name)
+        elif input_value == '6':
+            input_id = input("삭제할 도서의 아이디를 입력해주세요. \n >>>")
+            library.remove_book(input_id)
+        elif input_value == '7':
+            input_id = input("변경할 도서의 아이디를 입력해주세요. \n >>>")
+            input_name = input("변경할 도서의 이름을 입력해주세요. \n >>>")
+            input_author = input("변경할 도서의 저자를 입력해주세요. \n >>>")
+            library.update_book(input_id, input_name, input_author) 
+        elif input_value == '8':
+            library.show_book_list()
         elif input_value == '9':
             break
-    
-    #library.regist_member("최진용")
-    #library.show_memberlist()
-    
-    #library.regist_book("돈 키호테", "미켈 데 세르반테스")
-    #library.show_book_list()
