@@ -1,4 +1,5 @@
 import random
+import os
 
 ## 도서관 클래스
 ## 회원 등록, 회원 정보 변경, 회원 삭제, 도서 정보 등록, 도서 정보 변경, 도서 정보 삭제, 도서 대출, 도서 반납 기능
@@ -6,15 +7,10 @@ import random
 class Member:
     member_id = ""
     member_name = ""
-    
-    def __init__(self, name):
+        
+    def __init__(self, id, name):
+        self.member_id = id
         self.member_name = name
-        
-        id_key = random.randint(65,90)
-        string_key = chr(id_key)
-        string_key += str(random.randint(100000,999999))
-        
-        self.member_id = string_key
         
     def update_member_data(self, name):
         self.member_name = name
@@ -24,16 +20,11 @@ class Book:
     book_name = ""
     book_author = ""
     book_member_id = ""
-    
-    def __init__(self, name, author):
+        
+    def __init__(self, id, name, author):
+        self.book_id = id
         self.book_name = name
         self.book_author = author
-        
-        id_key = random.randint(65,90)
-        string_key = str(random.randint(100000,999999)) 
-        string_key += chr(id_key)
-        
-        self.book_id = string_key
         
     def update_member_id(self, member_id):
         self.book_member_id = member_id
@@ -47,7 +38,16 @@ class Library:
     book_list = []
         
     def regist_member(self, name):
-        new_member = Member(name)
+        id_key = random.randint(65,90)
+        string_key = chr(id_key)
+        string_key += str(random.randint(100000,999999))
+        
+        new_member = Member(string_key, name)
+        self.member_list.append(new_member)
+        print("--회원 추가가 성공하였습니다.--")
+        
+    def regist_member_from_file(self, id, name):
+        new_member = Member(id, name)
         self.member_list.append(new_member)
         print("--회원 추가가 성공하였습니다.--")
         
@@ -77,9 +77,30 @@ class Library:
             print(member.member_id, member.member_name)
             
         print("\n")
+        
+    def write_member_list(self, file):
+        for member in self.member_list:
+            input_data = str(member.member_id) + " " + str(member.member_name)
+            file.write(input_data)
+        
+    def read_member_list(self, file):
+        
+        lines = file.readlines()
+        
+        for line in lines:
+            list = line.split()
+            self.regist_member_from_file(list[0], list[1])
             
     def regist_book(self, name, author):
-        new_book = Book(name, author)
+        id_key = random.randint(65,90)
+        string_key = str(random.randint(100000,999999)) 
+        string_key += chr(id_key)
+        
+        new_book = Book(string_key, name, author)
+        self.book_list.append(new_book)
+        
+    def regist_book_from_file(self, id, name, author):
+        new_book = Book(id, name, author)
         self.book_list.append(new_book)
         
     def remove_book(self, id):
@@ -110,9 +131,37 @@ class Library:
             
         print("\n")
         
+    def write_book_list(self, file):
+        for book in self.book_list:
+            input_data = str(book.book_id) + " " + str(book.book_name) + " " + str(book.book_author)
+            file.write(input_data)
+        
+    def read_book_list(self, file):
+        
+        lines = file.readlines()
+        
+        for line in lines:
+            list = line.split()
+            self.regist_book_from_file(list[0], list[1], list[2])
+        
 if __name__ == "__main__":
     
     library = Library()
+    
+    book_path = os.getcwd() + "\\book_data.txt"
+    member_path = os.getcwd() + "\\member_data.txt"
+    
+    try:
+        book_file = open(book_path, "r", encoding="utf-8")
+        library.read_book_list(book_file)
+    except FileNotFoundError as e:
+        print(e)
+    
+    try:
+        member_file = open(member_path, "r", encoding="utf-8")
+        library.read_member_list(member_file)
+    except FileNotFoundError as e:
+        print(e)
     
     while True:
         print("1. 회원 등록")
@@ -141,7 +190,8 @@ if __name__ == "__main__":
             library.show_memberlist()
         elif input_value == '5':
             input_name = input("신규 도서의 이름을 입력해주세요. \n >>>")
-            library.regist_book(input_name)
+            input_author = input("변경할 도서의 저자를 입력해주세요. \n >>>")
+            library.regist_book(input_name, input_author)
         elif input_value == '6':
             input_id = input("삭제할 도서의 아이디를 입력해주세요. \n >>>")
             library.remove_book(input_id)
@@ -154,3 +204,13 @@ if __name__ == "__main__":
             library.show_book_list()
         elif input_value == '9':
             break
+    
+    book_file = open(book_path, "w", encoding="utf-8")
+    library.write_book_list(book_file)
+    
+    book_file.close()
+    
+    member_file = open(member_path, "w", encoding="utf-8")
+    library.write_member_list(member_file)
+    
+    member_file.close()
