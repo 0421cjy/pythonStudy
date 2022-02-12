@@ -142,13 +142,7 @@ class Library:
             list = line.split()
             self.regist_book_from_file(list[0], list[1], list[2])
         
-if __name__ == "__main__":
-    
-    library = Library()
-    
-    book_path = os.getcwd() + "\\book_data.txt"
-    member_path = os.getcwd() + "\\member_data.txt"
-    
+def load_data(library, book_path, member_path):
     try:
         book_file = open(book_path, "r", encoding="utf-8")
         library.read_book_list(book_file)
@@ -162,6 +156,23 @@ if __name__ == "__main__":
         member_file.close()
     except FileNotFoundError as e:
         print(e)
+        
+def save_data(library, book_path, member_path):
+    try:
+        book_file = open(book_path, "w", encoding="utf-8")
+        library.write_book_list(book_file)
+        book_file.close()
+    except FileNotFoundError as e:
+        print(e)
+    
+    try:
+        member_file = open(member_path, "w", encoding="utf-8")
+        library.write_member_list(member_file)
+        member_file.close()
+    except FileNotFoundError as e:
+        print(e)
+    
+def main_entrance(library):
     
     while True:
         print("1. 회원 등록")
@@ -204,13 +215,14 @@ if __name__ == "__main__":
             library.show_book_list()
         elif input_value == '9':
             break
+        
+if __name__ == "__main__":
     
-    book_file = open(book_path, "w", encoding="utf-8")
-    library.write_book_list(book_file)
+    book_path = os.getcwd() + "\\book_data.txt"
+    member_path = os.getcwd() + "\\member_data.txt"
     
-    book_file.close()
+    library = Library()
     
-    member_file = open(member_path, "w", encoding="utf-8")
-    library.write_member_list(member_file)
-    
-    member_file.close()
+    load_data(library, book_path, member_path)
+    main_entrance(library)
+    save_data(library, book_path, member_path)
